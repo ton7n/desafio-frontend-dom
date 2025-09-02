@@ -23,7 +23,7 @@ Este projeto consiste em transformar uma página estática de catálogo de café
 2. **Clone** para sua máquina local:
    ```bash
    git clone [URL_DO_SEU_FORK]
-   cd desafio-progressivo-frontend-dom-sass-m2-t17
+   cd desafio-frontend-dom
    ```
 3. **Abra** o projeto no seu editor
 4. **Implemente** as funcionalidades conforme as orientações abaixo
@@ -45,6 +45,9 @@ desafio-frontend-dom/
 ├── index.html              # Página principal
 └── README.md               # Este arquivo
 ```
+
+## Layout
+ [Link do figma](https://www.figma.com/design/s3cHWPjspc0k60nYuMPkHo/desafio-js-dom?m=auto&t=Xn2rmkA3Q4De9sDX-1)
 
 ## 💻 O que Implementar
 
@@ -84,6 +87,97 @@ desafio-frontend-dom/
   </form>
 </div>
 ```
+
+---
+
+## Carrinho de Produtos
+
+**Objetivo**: Implementar um sistema de carrinho que permita adicionar produtos, gerenciar quantidades e finalizar compras.
+
+**Funcionalidades**:
+- Adicionar produtos ao carrinho
+- Visualizar produtos no carrinho
+- Alterar quantidades
+- Remover produtos
+- Calcular valor total
+- Persistir dados no localStorage
+
+**Estrutura HTML do Carrinho**:
+```html
+<div class="cart">
+  <div class="cart__header">
+    <h3>Seu Carrinho</h3>
+    <button class="cart__close">×</button>
+  </div>
+  
+  <div class="cart__products">
+    <!-- Produtos serão inseridos dinamicamente aqui -->
+  </div>
+  
+  <div class="cart__footer">
+    <div class="cart__total">
+      <span>Total:</span>
+      <strong class="cart__total--value">R$ 0,00</strong>
+    </div>
+    <button class="cart__checkout">Finalizar Compra</button>
+  </div>
+</div>
+```
+
+**Estrutura de um Item do Carrinho**:
+```html
+<div class="cart__item" data-id="produto-123">
+  <div class="cart__item--image">
+    <img src="./image/product-01.png" alt="Nome do Produto">
+  </div>
+  
+  <div class="cart__item--details">
+    <h4 class="cart__item--name">Nome do Produto</h4>
+    <p class="cart__item--observation">Observação do cliente</p>
+    
+    <div class="cart__item--controls">
+      <button class="cart__item--minus">-</button>
+      <span class="cart__item--quantity">2</span>
+      <button class="cart__item--plus">+</button>
+    </div>
+  </div>
+  
+  <div class="cart__item--price">
+    <span class="cart__item--unit-price">R$ 8,00</span>
+    <span class="cart__item--total-price">R$ 16,00</span>
+  </div>
+  
+  <button class="cart__item--remove">×</button>
+</div>
+```
+
+**Implementação JavaScript**:
+
+1. **Estrutura de Dados**:
+```javascript
+// Item do carrinho
+const itemCarrinho = {
+  id: "produto-123",
+  idProduto: "produto-123",
+  nome: "Nome do Produto",
+  imagem: "./image/product-01.png",
+  preco: 800, // em centavos
+  quantidade: 2
+};
+```
+
+**Eventos e Interações**:
+- Clique no ícone do carrinho: Abre/fecha o carrinho
+- Botão "+" no item: Aumenta quantidade
+- Botão "-" no item: Diminui quantidade (remove se chegar a 0)
+- Botão "×" no item: Remove produto do carrinho
+- Botão "Finalizar Compra": Processa a compra (pode abrir modal de confirmação)
+
+**Validações**:
+- Quantidade mínima: 1
+- Quantidade máxima: 99
+- Produto já existe: Atualizar quantidade ao invés de duplicar
+- Carrinho vazio: Mostrar mensagem "Seu carrinho está vazio"
 
 #### 2. Controles de Quantidade
 
