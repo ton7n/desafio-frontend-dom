@@ -166,12 +166,7 @@ const itemCarrinho = {
 };
 ```
 
-**Eventos e Interações**:
-- Clique no ícone do carrinho: Abre/fecha o carrinho
-- Botão "+" no item: Aumenta quantidade
-- Botão "-" no item: Diminui quantidade (remove se chegar a 0)
-- Botão "×" no item: Remove produto do carrinho
-- Botão "Finalizar Compra": Processa a compra (pode abrir modal de confirmação)
+
 
 **Validações**:
 - Quantidade mínima: 1
@@ -210,7 +205,12 @@ const itemCarrinho = {
 
 **Funcionalidades**:
 - Abrir: clique no ícone do carrinho no header
-- Fechar: clique no botão X (`.cart__close`)
+- Fechar: clique no botão X (`.cart__close`)**Eventos e Interações**:
+- Clique no ícone do carrinho: Abre/fecha o carrinho
+- Botão "+" no item: Aumenta quantidade
+- Botão "-" no item: Diminui quantidade (remove se chegar a 0)
+- Botão "×" no item: Remove produto do carrinho
+- Botão "Finalizar Compra": Processa a compra (pode abrir modal de confirmação)
 - Toggle da classe `.cart--active` para mostrar/ocultar
 
 ### 🛒 PARTE 2: Gerenciamento do Carrinho

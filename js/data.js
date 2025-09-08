@@ -175,3 +175,4 @@ const dados = {
     }
   ]
 };
+export {dados};
