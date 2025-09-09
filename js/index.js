@@ -14,7 +14,7 @@ function renderizarProdutos() {
         <span>R$ ${(produto.preco.de / 100).toFixed(2)}</span></h3>
       <h4 class="products__list--name">${produto.nome}</h4>
       <div class="product__tag">
-        ${produto.vegano ? `<img src="./image/Plant.png" alt="vegano"><span>Vegano</span>` : ""}
+        ${produto.vegano ? `<img src="./image/Plant.png" alt="vegano"><span>Vegano</span>` : `<img src="./image/Cow.png" alt="contém leite"><span>Contém leite</span>`}
       </div>
       <form>
         <div class="product__buy">
@@ -72,7 +72,8 @@ function renderizarCarrinho() {
   const cartQuantity = document.querySelector(".cart__quantity-items");
   const cartSubtotal = document.querySelector(".cart__footer--subtotal .cart__footer--price");
   const cartTotal = document.querySelector(".cart__footer--total .cart__footer--price");
-  
+  const badgeQuantity = document.querySelector(".badge__quantity");
+
   cartProducts.innerHTML = ""; 
   let totalItens = 0;
   let subtotal = 0;
@@ -127,15 +128,17 @@ function renderizarCarrinho() {
       renderizarCarrinho();
     });
 
+
+
     cartProducts.appendChild(produtoItem);
   });
 
   cartQuantity.textContent = `${totalItens} item${totalItens > 1 ? "s" : ""}`;
   cartSubtotal.textContent = `R$ ${(subtotal / 100).toFixed(2)}`;
   cartTotal.textContent = `R$ ${(subtotal / 100).toFixed(2)}`;
+
+  badgeQuantity.textContent = totalItens;
 }
-const badgeQuantity = document.querySelector(".badge__quantity");
-badgeQuantity.textContent = totalItens;
 
 renderizarCarrinho();
 
@@ -143,6 +146,7 @@ const btnCart = document.querySelector(".link__quantity");
 const cart = document.querySelector(".cart");
 const btnClose = document.querySelector(".cart__close");
 const btnBuy = document.querySelector(".cart__buy");
+const btnDeleteAll = document.querySelector(".cart__delete-all");
 
 btnCart.addEventListener("click", (e) => {
   e.preventDefault();
@@ -158,9 +162,13 @@ btnBuy.addEventListener("click", () => {
     alert("Seu carrinho está vazio!");
     return;
   }
-
   alert("Compra finalizada com sucesso!");
   dados.carrinho = [];
   renderizarCarrinho();
   cart.classList.remove("cart--active");
+});
+btnDeleteAll.addEventListener("click", (e) => {
+  e.preventDefault();
+  dados.carrinho = [];
+  renderizarCarrinho();
 });
