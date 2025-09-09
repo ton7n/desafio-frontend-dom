@@ -10,9 +10,8 @@ function renderizarProdutos() {
     item.innerHTML = `
       <img src="${produto.imagem}" alt="${produto.nome}">
       <h3 class="products__list--price">
-        R$ ${(produto.preco.de / 100).toFixed(2)} 
-        <span>R$ ${(produto.preco.por / 100).toFixed(2)}</span>
-      </h3>
+        R$ ${(produto.preco.por / 100).toFixed(2)}
+        <span>R$ ${(produto.preco.de / 100).toFixed(2)}</span></h3>
       <h4 class="products__list--name">${produto.nome}</h4>
       <div class="product__tag">
         ${produto.vegano ? `<img src="./image/Plant.png" alt="vegano"><span>Vegano</span>` : ""}
@@ -40,6 +39,33 @@ function renderizarProdutos() {
 }
 
 renderizarProdutos();
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("product__button")) {
+    const idProduto = e.target.getAttribute("data-id");
+    const produto = dados.produtos.find(p => p.id === idProduto);
+    if (!produto) return;
+
+    const existente = dados.carrinho.find(item => item.idProduto === idProduto);
+
+    if (existente) {
+      existente.quantidade++;
+    } else {
+      dados.carrinho.push({
+        id: crypto.randomUUID(),  
+        idProduto: produto.id,
+        nome: produto.nome,
+        imagem: produto.imagem,
+        preco: produto.preco.por,  
+        vegano: produto.vegano,
+        quantidade: 1
+      });
+    }
+
+    renderizarCarrinho();
+    document.querySelector(".cart").classList.add("cart--active");
+  }
+});
+
 
 function renderizarCarrinho() {
   const cartProducts = document.querySelector(".cart__products");
@@ -56,29 +82,32 @@ function renderizarCarrinho() {
     subtotal += item.preco * Number(item.quantidade);
 
     const produtoItem = document.createElement("div");
-    produtoItem.classList.add("cart__product-item");
+    produtoItem.classList.add("cart__product");
     produtoItem.dataset.id = item.id;
 
     produtoItem.innerHTML = `
-      <img src="${item.imagem}" alt="${item.nome}">
-      <div class="cart__product-info">
-        <h4>${item.nome}</h4>
-        <p>
-          R$ ${(item.preco / 100).toFixed(2)} x ${item.quantidade} = 
-          R$ ${((item.preco * item.quantidade) / 100).toFixed(2)}
-        </p>
-        <div class="cart__product-actions">
-          <button class="cart__product-minus" data-id="${item.id}">-</button>
-          <span>${item.quantidade}</span>
-          <button class="cart__product-plus" data-id="${item.id}">+</button>
-          <button class="cart__product-remove" data-id="${item.id}">Remover</button>
+      <img src="${item.imagem}" alt="${item.nome}" class="cart__product--image">
+      <div class="cart__product--info">
+        <div class="cart__product--row">
+          <div class="cart__product--column">
+            <h2 class="cart__product--name">${item.nome}</h2>
+          </div>
+          <button class="cart__product--delete">×</button>
+        </div>
+        <div class="cart__product--row">
+          <h3 class="cart__product--price">R$ ${(item.preco / 100).toFixed(2)}</h3>
+          <section class="product__quantity">
+            <button type="button" class="cart-minus">-</button>
+            <span class="cart__product--quantity">${item.quantidade}</span>
+            <button type="button" class="cart-plus">+</button>
+          </section>
         </div>
       </div>
     `;
 
-    const btnMais = produtoItem.querySelector(".cart__product-plus");
-    const btnMenos = produtoItem.querySelector(".cart__product-minus");
-    const btnRemover = produtoItem.querySelector(".cart__product-remove");
+    const btnMais = produtoItem.querySelector(".cart-plus");
+    const btnMenos = produtoItem.querySelector(".cart-minus");
+    const btnRemover = produtoItem.querySelector(".cart__product--delete");
 
     btnMais.addEventListener("click", () => {
       item.quantidade++;
@@ -105,5 +134,33 @@ function renderizarCarrinho() {
   cartSubtotal.textContent = `R$ ${(subtotal / 100).toFixed(2)}`;
   cartTotal.textContent = `R$ ${(subtotal / 100).toFixed(2)}`;
 }
+const badgeQuantity = document.querySelector(".badge__quantity");
+badgeQuantity.textContent = totalItens;
 
 renderizarCarrinho();
+
+const btnCart = document.querySelector(".link__quantity");
+const cart = document.querySelector(".cart");
+const btnClose = document.querySelector(".cart__close");
+const btnBuy = document.querySelector(".cart__buy");
+
+btnCart.addEventListener("click", (e) => {
+  e.preventDefault();
+  cart.classList.add("cart--active");
+});
+
+btnClose.addEventListener("click", () => {
+  cart.classList.remove("cart--active");
+});
+
+btnBuy.addEventListener("click", () => {
+  if (dados.carrinho.length === 0) {
+    alert("Seu carrinho está vazio!");
+    return;
+  }
+
+  alert("Compra finalizada com sucesso!");
+  dados.carrinho = [];
+  renderizarCarrinho();
+  cart.classList.remove("cart--active");
+});
