@@ -1,4 +1,16 @@
 import { dados } from "./data.js";
+
+function salvarCarrinho() {
+  localStorage.setItem("carrinho", JSON.stringify(dados.carrinho));
+}
+function carregarCarrinho() {
+  const salvo = localStorage.getItem("carrinho");
+  if (salvo) {
+    dados.carrinho = JSON.parse(salvo);
+  } else {
+    dados.carrinho = [];
+  }
+}
 function renderizarProdutos() {
   const listaClassicos = document.querySelectorAll(".products__list")[0];
   const listaGelados = document.querySelectorAll(".products__list")[1];
@@ -35,6 +47,29 @@ function renderizarProdutos() {
     } else if (produto.categoria === "gelados") {
       listaGelados.appendChild(item);
     }
+
+    const btnMinus = item.querySelector(".product__quantity--minus");
+    const btnPlus = item.querySelector(".product__quantity--plus");
+    const inputQtd = item.querySelector(".product__quantity--input");
+
+    btnMinus.addEventListener("click", () => {
+      let valor = parseInt(inputQtd.value) || 1;
+      if (valor > 1) {
+        inputQtd.value = valor - 1;
+      }
+    });
+
+    btnPlus.addEventListener("click", () => {
+      let valor = parseInt(inputQtd.value) || 1;
+      if (valor < 99) inputQtd.value = valor + 1;
+    });
+
+    inputQtd.addEventListener("input", () => {
+      let valor = parseInt(inputQtd.value);
+     if (isNaN(valor) || valor < 1) valor = 1;
+     if (valor > 99) valor = 99;
+     inputQtd.value = valor;
+    });
   });
 }
 
@@ -45,10 +80,15 @@ document.addEventListener("click", (e) => {
     const produto = dados.produtos.find(p => p.id === idProduto);
     if (!produto) return;
 
+     const quantidadeInput = e.target
+      .closest(".product__buy")
+      .querySelector(".product__quantity--input");
+    const quantidadeSelecionada = Number(quantidadeInput.value) || 1;
+
     const existente = dados.carrinho.find(item => item.idProduto === idProduto);
 
     if (existente) {
-      existente.quantidade++;
+      existente.quantidade+=quantidadeSelecionada;
     } else {
       dados.carrinho.push({
         id: crypto.randomUUID(),  
@@ -57,7 +97,7 @@ document.addEventListener("click", (e) => {
         imagem: produto.imagem,
         preco: produto.preco.por,  
         vegano: produto.vegano,
-        quantidade: 1
+        quantidade: quantidadeSelecionada
       });
     }
 
@@ -99,7 +139,7 @@ function renderizarCarrinho() {
           <h3 class="cart__product--price">R$ ${(item.preco / 100).toFixed(2)}</h3>
           <section class="product__quantity">
             <button type="button" class="cart-minus">-</button>
-            <span class="cart__product--quantity">${item.quantidade}</span>
+            <span class="cart__product--quantity">${item.quantidade} </span>
             <button type="button" class="cart-plus">+</button>
           </section>
         </div>
@@ -111,8 +151,10 @@ function renderizarCarrinho() {
     const btnRemover = produtoItem.querySelector(".cart__product--delete");
 
     btnMais.addEventListener("click", () => {
-      item.quantidade++;
+      if (item.quantidade < 99) {
+    item.quantidade++;
       renderizarCarrinho();
+      }
     });
 
     btnMenos.addEventListener("click", () => {
@@ -127,8 +169,15 @@ function renderizarCarrinho() {
       dados.carrinho = dados.carrinho.filter(i => i.id !== item.id);
       renderizarCarrinho();
     });
-
-
+    const inputQtd = produtoItem.querySelector(".cart__product--quantity");
+      inputQtd.addEventListener("change", () => {
+      let valor = parseInt(inputQtd.value, 10);
+      if (isNaN(valor) || valor < 1) valor = 1;
+      if (valor > 99) valor = 99;
+      item.quantidade = valor;
+      salvarCarrinho();
+      renderizarCarrinho();
+    });
 
     cartProducts.appendChild(produtoItem);
   });
@@ -138,9 +187,9 @@ function renderizarCarrinho() {
   cartTotal.textContent = `R$ ${(subtotal / 100).toFixed(2)}`;
 
   badgeQuantity.textContent = totalItens;
-}
 
-renderizarCarrinho();
+  salvarCarrinho();
+}
 
 const btnCart = document.querySelector(".link__quantity");
 const cart = document.querySelector(".cart");
@@ -164,11 +213,16 @@ btnBuy.addEventListener("click", () => {
   }
   alert("Compra finalizada com sucesso!");
   dados.carrinho = [];
+  salvarCarrinho();
   renderizarCarrinho();
   cart.classList.remove("cart--active");
 });
 btnDeleteAll.addEventListener("click", (e) => {
   e.preventDefault();
   dados.carrinho = [];
+  salvarCarrinho();
   renderizarCarrinho();
 });
+carregarCarrinho();
+renderizarProdutos();
+renderizarCarrinho();

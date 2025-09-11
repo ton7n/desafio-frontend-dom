@@ -113,9 +113,31 @@
 }
 
 .cart__product .product__quantity {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 120px;
   height: 40px;
+  border: 1px solid var(--gray-700);
+  border-radius: 6px;
+  overflow: hidden;
 }
+
+.cart__product .product__quantity button {
+  width: 40px;
+  height: 100%;
+  background-color: var(--brown-400);
+  color: var(--gray-100);
+  font-size: 2rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cart__product .product__quantity button:hover {
+  background-color: var(--brown-300);
+}
+
 .cart__product .product__buy {
   padding-top: 0;
 }
